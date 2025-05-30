@@ -168,6 +168,88 @@ function formatFileSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+function displayImprovedMidiSection(improvedMidi, userPreferences) {
+    const section = document.getElementById('improvedMidiSection');
+    const appliedImprovements = document.getElementById('appliedImprovements');
+    const downloadBtn = document.getElementById('downloadImprovedBtn');
+    const filenameDisplay = document.getElementById('improvedFilename');
+    
+    if (!section) return;
+    
+    // Show the section
+    section.style.display = 'block';
+    section.classList.add('fade-in');
+    
+    // Display applied improvements based on user goals
+    if (appliedImprovements && userPreferences.goals) {
+        const goalDescriptions = {
+            'harmony': '<i class="fas fa-layer-group text-success me-2"></i>Enhanced chord progressions and harmonic movement',
+            'melody': '<i class="fas fa-wave-square text-success me-2"></i>Improved melodic lines and harmonic intervals',
+            'rhythm': '<i class="fas fa-drum text-success me-2"></i>Added rhythmic elements and percussion tracks',
+            'structure': '<i class="fas fa-sitemap text-success me-2"></i>Extended song structure with intro/outro sections',
+            'arrangement': '<i class="fas fa-magic text-success me-2"></i>Enhanced instrumentation and accompaniment',
+            'genre': '<i class="fas fa-music text-success me-2"></i>Applied genre-specific styling and characteristics'
+        };
+        
+        let improvementsHTML = '';
+        userPreferences.goals.forEach(goal => {
+            if (goalDescriptions[goal]) {
+                improvementsHTML += `<li class="mb-1">${goalDescriptions[goal]}</li>`;
+            }
+        });
+        
+        if (userPreferences.target_genre) {
+            improvementsHTML += `<li class="mb-1"><i class="fas fa-guitar text-success me-2"></i>Optimized for ${userPreferences.target_genre} style</li>`;
+        }
+        
+        appliedImprovements.innerHTML = improvementsHTML;
+    }
+    
+    // Set filename
+    if (filenameDisplay) {
+        filenameDisplay.textContent = improvedMidi.filename || 'improved_music.mid';
+    }
+    
+    // Set up download functionality
+    if (downloadBtn) {
+        downloadBtn.onclick = function() {
+            downloadImprovedMidi(improvedMidi.download_id, improvedMidi.filename);
+        };
+    }
+}
+
+function downloadImprovedMidi(downloadId, filename) {
+    const downloadBtn = document.getElementById('downloadImprovedBtn');
+    
+    if (downloadBtn) {
+        // Show loading state
+        const originalHTML = downloadBtn.innerHTML;
+        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Preparing Download...';
+        downloadBtn.disabled = true;
+        
+        // Create download link
+        const downloadUrl = `/download/${downloadId}`;
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Restore button after a delay
+        setTimeout(() => {
+            downloadBtn.innerHTML = originalHTML;
+            downloadBtn.disabled = false;
+            
+            // Optionally clean up the temporary file after download
+            setTimeout(() => {
+                fetch(`/cleanup/${downloadId}`, { method: 'POST' })
+                    .catch(error => console.log('Cleanup completed'));
+            }, 5000); // Clean up after 5 seconds
+        }, 1000);
+    }
+}
+
 function handleGoalChange(e) {
     const goalOption = e.target.closest('.analysis-goal-option');
     if (goalOption) {
@@ -333,6 +415,11 @@ function showNoResults() {
 }
 
 function displayResults(results) {
+    // Display improved MIDI download section if available
+    if (results.improved_midi && results.improved_midi.available) {
+        displayImprovedMidiSection(results.improved_midi, results.user_preferences);
+    }
+    
     displayAnalysisSummary(results.analysis);
     displayDetailedAnalysis(results.analysis);
     displayRecommendations(results.recommendations);

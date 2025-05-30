@@ -23,6 +23,43 @@
 
         <!-- Results will be populated by JavaScript -->
         <div id="resultsContainer">
+            <!-- Improved MIDI Download Section -->
+            <div class="row mb-4" id="improvedMidiSection" style="display: none;">
+                <div class="col-12">
+                    <div class="card border-success">
+                        <div class="card-header bg-success text-white">
+                            <h4 class="mb-0">
+                                <i class="fas fa-download me-2"></i>
+                                Your Improved MIDI File
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5 class="text-success mb-2">
+                                        <i class="fas fa-magic me-2"></i>
+                                        AI-Enhanced Version Ready!
+                                    </h5>
+                                    <p class="mb-2">Your MIDI file has been automatically improved based on your selected goals and preferences. The enhanced version includes:</p>
+                                    <ul class="list-unstyled mb-3" id="appliedImprovements">
+                                        <!-- Populated by JavaScript -->
+                                    </ul>
+                                    <small class="text-muted">The improved file incorporates music theory principles and genre-specific enhancements.</small>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <button class="btn btn-success btn-lg" id="downloadImprovedBtn">
+                                        <i class="fas fa-download me-2"></i>
+                                        Download Improved MIDI
+                                    </button>
+                                    <br>
+                                    <small class="text-muted mt-2 d-block" id="improvedFilename">improved_music.mid</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Analysis Summary -->
             <div class="row mb-4">
                 <div class="col-12">
