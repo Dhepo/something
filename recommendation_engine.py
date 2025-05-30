@@ -5,18 +5,34 @@ class RecommendationEngine:
     def __init__(self):
         self.music_theory = MusicTheoryHelper()
     
-    def generate_recommendations(self, analysis):
-        """Generate comprehensive recommendations based on analysis"""
-        recommendations = {
-            'harmonic_suggestions': self._get_harmonic_suggestions(analysis),
-            'melodic_suggestions': self._get_melodic_suggestions(analysis),
-            'rhythmic_suggestions': self._get_rhythmic_suggestions(analysis),
-            'structural_suggestions': self._get_structural_suggestions(analysis),
-            'arrangement_ideas': self._get_arrangement_ideas(analysis),
-            'development_strategies': self._get_development_strategies(analysis)
+    def generate_recommendations(self, analysis, user_preferences=None):
+        """Generate comprehensive recommendations based on analysis and user preferences"""
+        if user_preferences is None:
+            user_preferences = {'goals': [], 'target_genre': '', 'additional_notes': ''}
+        
+        user_goals = user_preferences.get('goals', [])
+        target_genre = user_preferences.get('target_genre', '')
+        
+        # Generate all recommendations but prioritize based on user goals
+        all_recommendations = {
+            'harmonic_suggestions': self._get_harmonic_suggestions(analysis, target_genre),
+            'melodic_suggestions': self._get_melodic_suggestions(analysis, target_genre),
+            'rhythmic_suggestions': self._get_rhythmic_suggestions(analysis, target_genre),
+            'structural_suggestions': self._get_structural_suggestions(analysis, target_genre),
+            'arrangement_ideas': self._get_arrangement_ideas(analysis, target_genre),
+            'development_strategies': self._get_development_strategies(analysis, target_genre),
+            'genre_specific_tips': self._get_genre_specific_suggestions(analysis, target_genre),
+            'personalized_priority': self._get_prioritized_suggestions(analysis, user_goals, target_genre)
         }
         
-        return recommendations
+        # Add user context
+        all_recommendations['user_context'] = {
+            'goals': user_goals,
+            'target_genre': target_genre,
+            'notes': user_preferences.get('additional_notes', '')
+        }
+        
+        return all_recommendations
     
     def _get_harmonic_suggestions(self, analysis):
         """Generate harmony-related suggestions"""

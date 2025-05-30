@@ -40,6 +40,109 @@
                                 </div>
                             </div>
                             
+                            <!-- Analysis Goals Section -->
+                            <div class="mb-4" id="analysisGoals" style="display: none;">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-bullseye me-2"></i>
+                                    What would you like to improve in your music?
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check analysis-goal-option">
+                                            <input class="form-check-input" type="checkbox" value="harmony" id="goalHarmony" name="goals">
+                                            <label class="form-check-label" for="goalHarmony">
+                                                <i class="fas fa-layer-group me-2"></i>
+                                                <strong>Harmony & Chords</strong>
+                                                <small class="d-block text-muted">Improve chord progressions and harmonic movement</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check analysis-goal-option">
+                                            <input class="form-check-input" type="checkbox" value="melody" id="goalMelody" name="goals">
+                                            <label class="form-check-label" for="goalMelody">
+                                                <i class="fas fa-wave-square me-2"></i>
+                                                <strong>Melody & Lead</strong>
+                                                <small class="d-block text-muted">Enhance melodic lines and create memorable hooks</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check analysis-goal-option">
+                                            <input class="form-check-input" type="checkbox" value="rhythm" id="goalRhythm" name="goals">
+                                            <label class="form-check-label" for="goalRhythm">
+                                                <i class="fas fa-drum me-2"></i>
+                                                <strong>Rhythm & Groove</strong>
+                                                <small class="d-block text-muted">Add rhythmic interest and improve timing</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check analysis-goal-option">
+                                            <input class="form-check-input" type="checkbox" value="structure" id="goalStructure" name="goals">
+                                            <label class="form-check-label" for="goalStructure">
+                                                <i class="fas fa-sitemap me-2"></i>
+                                                <strong>Song Structure</strong>
+                                                <small class="d-block text-muted">Organize sections and create better song flow</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check analysis-goal-option">
+                                            <input class="form-check-input" type="checkbox" value="arrangement" id="goalArrangement" name="goals">
+                                            <label class="form-check-label" for="goalArrangement">
+                                                <i class="fas fa-magic me-2"></i>
+                                                <strong>Arrangement & Production</strong>
+                                                <small class="d-block text-muted">Improve instrumentation and overall sound</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check analysis-goal-option">
+                                            <input class="form-check-input" type="checkbox" value="genre" id="goalGenre" name="goals">
+                                            <label class="form-check-label" for="goalGenre">
+                                                <i class="fas fa-music me-2"></i>
+                                                <strong>Genre Development</strong>
+                                                <small class="d-block text-muted">Enhance genre-specific characteristics</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Genre Selection -->
+                                <div class="mb-3" id="genreSelection" style="display: none;">
+                                    <label for="targetGenre" class="form-label">
+                                        <i class="fas fa-guitar me-2"></i>
+                                        What genre are you aiming for?
+                                    </label>
+                                    <select class="form-select" id="targetGenre" name="target_genre">
+                                        <option value="">Select a genre (optional)</option>
+                                        <option value="pop">Pop</option>
+                                        <option value="rock">Rock</option>
+                                        <option value="jazz">Jazz</option>
+                                        <option value="classical">Classical</option>
+                                        <option value="electronic">Electronic/EDM</option>
+                                        <option value="folk">Folk</option>
+                                        <option value="blues">Blues</option>
+                                        <option value="country">Country</option>
+                                        <option value="rnb">R&B/Soul</option>
+                                        <option value="hiphop">Hip-Hop</option>
+                                        <option value="ambient">Ambient</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Additional Notes -->
+                                <div class="mb-3">
+                                    <label for="additionalNotes" class="form-label">
+                                        <i class="fas fa-comment me-2"></i>
+                                        Additional notes about your music (optional)
+                                    </label>
+                                    <textarea class="form-control" id="additionalNotes" name="additional_notes" rows="3" 
+                                              placeholder="Tell us about your musical vision, what you're trying to achieve, or any specific areas you'd like feedback on..."></textarea>
+                                </div>
+                            </div>
+                            
                             <div id="fileInfo" class="mb-3" style="display: none;">
                                 <div class="alert alert-info">
                                     <i class="fas fa-file-audio me-2"></i>

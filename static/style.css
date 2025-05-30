@@ -278,3 +278,69 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--primary));
 }
+
+/* Analysis Goal Options */
+.analysis-goal-option {
+    background: white;
+    border: 2px solid hsl(var(--secondary));
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: 100%;
+}
+
+.analysis-goal-option:hover {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 5px 15px hsl(var(--primary) / 0.1);
+    transform: translateY(-2px);
+}
+
+.analysis-goal-option .form-check-input:checked ~ .form-check-label {
+    color: hsl(var(--primary));
+}
+
+.analysis-goal-option .form-check-input:checked {
+    background-color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+}
+
+.analysis-goal-option.checked {
+    border-color: hsl(var(--primary));
+    background: linear-gradient(45deg, hsl(var(--primary) / 0.05) 0%, hsl(var(--primary) / 0.1) 100%);
+}
+
+.form-check-label {
+    cursor: pointer;
+    width: 100%;
+}
+
+.form-check-label strong {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.form-select {
+    border-radius: 10px;
+    border: 2px solid hsl(var(--secondary));
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 0.25rem hsl(var(--primary) / 0.25);
+}
+
+.form-control {
+    border-radius: 10px;
+    border: 2px solid hsl(var(--secondary));
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 0.25rem hsl(var(--primary) / 0.25);
+}

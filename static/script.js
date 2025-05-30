@@ -42,6 +42,18 @@ function setupEventListeners() {
     if (uploadForm) {
         uploadForm.addEventListener('submit', handleFormSubmit);
     }
+
+    // Analysis goal checkboxes
+    const goalCheckboxes = document.querySelectorAll('input[name="goals"]');
+    goalCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', handleGoalChange);
+    });
+
+    // Genre selection checkbox
+    const genreGoal = document.getElementById('goalGenre');
+    if (genreGoal) {
+        genreGoal.addEventListener('change', handleGenreGoalChange);
+    }
 }
 
 function handleDragOver(e) {
@@ -96,6 +108,14 @@ function displayFileInfo(file) {
     if (fileInfo) {
         fileInfo.style.display = 'block';
     }
+    
+    // Show analysis goals section
+    const analysisGoals = document.getElementById('analysisGoals');
+    if (analysisGoals) {
+        analysisGoals.style.display = 'block';
+        analysisGoals.classList.add('fade-in');
+    }
+    
     if (analyzeBtn) {
         analyzeBtn.disabled = false;
     }
@@ -108,6 +128,13 @@ function clearFile() {
     if (fileInfo) {
         fileInfo.style.display = 'none';
     }
+    
+    // Hide analysis goals section
+    const analysisGoals = document.getElementById('analysisGoals');
+    if (analysisGoals) {
+        analysisGoals.style.display = 'none';
+    }
+    
     if (analyzeBtn) {
         analyzeBtn.disabled = true;
     }
@@ -120,6 +147,28 @@ function formatFileSize(bytes) {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function handleGoalChange(e) {
+    const goalOption = e.target.closest('.analysis-goal-option');
+    if (goalOption) {
+        if (e.target.checked) {
+            goalOption.classList.add('checked');
+        } else {
+            goalOption.classList.remove('checked');
+        }
+    }
+}
+
+function handleGenreGoalChange(e) {
+    const genreSelection = document.getElementById('genreSelection');
+    if (genreSelection) {
+        if (e.target.checked) {
+            genreSelection.style.display = 'block';
+        } else {
+            genreSelection.style.display = 'none';
+        }
+    }
 }
 
 function handleFormSubmit(e) {

@@ -15,10 +15,9 @@ class MIDIAnalyzer:
             midi_file = mido.MidiFile(filepath)
             
             # Load with music21 for advanced analysis
-            score = stream.Score()
             try:
-                score = stream.Stream()
-                score.read('midi', fp=filepath)
+                from music21 import converter
+                score = converter.parse(filepath)
             except Exception as e:
                 print(f"Music21 parsing error: {e}")
                 # Fallback to mido-only analysis
@@ -235,7 +234,7 @@ class MIDIAnalyzer:
     def _analyze_rhythm(self, score):
         """Analyze rhythmic patterns"""
         try:
-            time_sigs = score.getElementsByClass(meter.TimeSignature)
+            time_sigs = score.getElementsByClass('TimeSignature')
             if time_sigs:
                 time_sig = str(time_sigs[0])
             else:

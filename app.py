@@ -38,20 +38,35 @@ def upload_file():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             
+            # Get user preferences
+            user_goals = request.form.getlist('goals')
+            target_genre = request.form.get('target_genre', '')
+            additional_notes = request.form.get('additional_notes', '')
+            
+            user_preferences = {
+                'goals': user_goals,
+                'target_genre': target_genre,
+                'additional_notes': additional_notes
+            }
+            
             # Analyze the MIDI file
             analyzer = MIDIAnalyzer()
             analysis_result = analyzer.analyze_file(filepath)
             
             if analysis_result['success']:
-                # Generate recommendations
+                # Generate personalized recommendations
                 rec_engine = RecommendationEngine()
-                recommendations = rec_engine.generate_recommendations(analysis_result['analysis'])
+                recommendations = rec_engine.generate_recommendations(
+                    analysis_result['analysis'], 
+                    user_preferences
+                )
                 
                 result = {
                     'success': True,
                     'filename': filename,
                     'analysis': analysis_result['analysis'],
-                    'recommendations': recommendations
+                    'recommendations': recommendations,
+                    'user_preferences': user_preferences
                 }
                 
                 # Clean up uploaded file
