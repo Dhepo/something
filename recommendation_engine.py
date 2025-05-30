@@ -34,7 +34,7 @@ class RecommendationEngine:
         
         return all_recommendations
     
-    def _get_harmonic_suggestions(self, analysis):
+    def _get_harmonic_suggestions(self, analysis, target_genre=''):
         """Generate harmony-related suggestions"""
         suggestions = []
         
@@ -80,7 +80,7 @@ class RecommendationEngine:
         
         return suggestions
     
-    def _get_melodic_suggestions(self, analysis):
+    def _get_melodic_suggestions(self, analysis, target_genre=''):
         """Generate melody-related suggestions"""
         suggestions = []
         
@@ -145,7 +145,7 @@ class RecommendationEngine:
         
         return suggestions
     
-    def _get_rhythmic_suggestions(self, analysis):
+    def _get_rhythmic_suggestions(self, analysis, target_genre=''):
         """Generate rhythm-related suggestions"""
         suggestions = []
         
@@ -197,7 +197,7 @@ class RecommendationEngine:
         
         return suggestions
     
-    def _get_structural_suggestions(self, analysis):
+    def _get_structural_suggestions(self, analysis, target_genre=''):
         """Generate structure-related suggestions"""
         suggestions = []
         
@@ -248,7 +248,7 @@ class RecommendationEngine:
         
         return suggestions
     
-    def _get_arrangement_ideas(self, analysis):
+    def _get_arrangement_ideas(self, analysis, target_genre=''):
         """Generate arrangement and instrumentation ideas"""
         suggestions = []
         
@@ -297,7 +297,7 @@ class RecommendationEngine:
         
         return suggestions
     
-    def _get_development_strategies(self, analysis):
+    def _get_development_strategies(self, analysis, target_genre=''):
         """Generate overall development strategies"""
         strategies = []
         
@@ -366,11 +366,102 @@ class RecommendationEngine:
         if not scale_notes:
             return "Explore dominant chords that resolve to scale degrees."
         
-        # Common secondary dominants
+        return "Try secondary dominants like V/V (dominant of dominant) or V/vi for added harmonic color."
+    
+    def _suggest_modal_interchange(self, key):
+        """Suggest modal interchange chords"""
+        return f"Borrow chords from {key} minor for emotional depth - try bVI, bVII, or iv chords."
+    
+    def _get_genre_specific_suggestions(self, analysis, target_genre):
+        """Generate genre-specific suggestions"""
         suggestions = []
-        if len(scale_notes) >= 6:
-            suggestions.append(f"V/vi: Dominant of {scale_notes[5]} (adds tension)")
-            suggestions.append(f"V/V: Dominant of {scale_notes[4]} (classic preparation)")
+        
+        if not target_genre:
+            return suggestions
+            
+        genre_tips = {
+            'pop': [
+                {'title': 'Pop Hook Development', 'description': 'Focus on memorable melodic hooks and simple chord progressions like vi-IV-I-V.'},
+                {'title': 'Verse-Chorus Contrast', 'description': 'Create clear distinction between verse (lower energy) and chorus (higher energy).'}
+            ],
+            'rock': [
+                {'title': 'Power Chord Usage', 'description': 'Use power chords (root and fifth) for driving rhythm sections.'},
+                {'title': 'Guitar-Driven Arrangement', 'description': 'Layer multiple guitar parts: rhythm, lead, and bass lines.'}
+            ],
+            'jazz': [
+                {'title': 'Extended Chords', 'description': 'Use 7th, 9th, 11th chords for sophisticated harmony.'},
+                {'title': 'Swing Rhythm', 'description': 'Apply swing feel to eighth notes for authentic jazz groove.'}
+            ],
+            'electronic': [
+                {'title': 'Build-ups and Drops', 'description': 'Create tension with build-ups leading to energetic drops.'},
+                {'title': 'Synth Layering', 'description': 'Layer synthesizers for rich, full electronic textures.'}
+            ]
+        }
+        
+        if target_genre in genre_tips:
+            for tip in genre_tips[target_genre]:
+                suggestions.append({
+                    'category': f'{target_genre.title()} Style',
+                    'title': tip['title'],
+                    'description': tip['description'],
+                    'specific_advice': f'This is essential for authentic {target_genre} sound.'
+                })
+        
+        return suggestions
+    
+    def _get_prioritized_suggestions(self, analysis, user_goals, target_genre):
+        """Get prioritized suggestions based on user goals"""
+        priority_suggestions = []
+        
+        if 'harmony' in user_goals:
+            priority_suggestions.append({
+                'category': 'Your Priority: Harmony',
+                'title': 'Chord Progression Enhancement',
+                'description': 'Focus on improving your harmonic movement and chord relationships.',
+                'specific_advice': 'Start with strong functional progressions like ii-V-I or vi-IV-I-V.'
+            })
+        
+        if 'melody' in user_goals:
+            priority_suggestions.append({
+                'category': 'Your Priority: Melody',
+                'title': 'Melodic Development',
+                'description': 'Create more memorable and engaging melodic lines.',
+                'specific_advice': 'Use a mix of steps and leaps, create melodic peaks, and repeat important motifs.'
+            })
+        
+        if 'rhythm' in user_goals:
+            priority_suggestions.append({
+                'category': 'Your Priority: Rhythm',
+                'title': 'Rhythmic Interest',
+                'description': 'Add rhythmic variety and groove to your music.',
+                'specific_advice': 'Try syncopation, varied note values, and rhythmic displacement.'
+            })
+        
+        if 'structure' in user_goals:
+            priority_suggestions.append({
+                'category': 'Your Priority: Structure',
+                'title': 'Song Organization',
+                'description': 'Improve the overall flow and organization of your song.',
+                'specific_advice': 'Plan clear sections with intro, verse, chorus, bridge, and outro.'
+            })
+        
+        if 'arrangement' in user_goals:
+            priority_suggestions.append({
+                'category': 'Your Priority: Arrangement',
+                'title': 'Instrumentation & Production',
+                'description': 'Enhance the overall sound through better arrangement.',
+                'specific_advice': 'Layer instruments thoughtfully, create space in the mix, and vary textures.'
+            })
+        
+        if 'genre' in user_goals and target_genre:
+            priority_suggestions.append({
+                'category': f'Your Priority: {target_genre.title()} Style',
+                'title': f'{target_genre.title()} Authenticity',
+                'description': f'Make your music sound more authentically {target_genre}.',
+                'specific_advice': f'Study classic {target_genre} songs and incorporate their characteristic elements.'
+            })
+        
+        return priority_suggestions
             suggestions.append(f"V/ii: Dominant of {scale_notes[1]} (smooth voice leading)")
         
         return '; '.join(suggestions) if suggestions else "Try dominant chords that resolve to different scale degrees."
