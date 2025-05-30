@@ -12,29 +12,179 @@ class MIDIGenerator:
     def apply_suggestions(self, original_filepath, analysis, recommendations, user_preferences):
         """Apply recommendations to generate an improved MIDI file"""
         try:
-            # Load the original MIDI file
+            print(f"Starting MIDI improvement process...")
+            
+            # Load the original MIDI file with mido
             original_midi = mido.MidiFile(original_filepath)
             
-            # Parse with music21 for easier manipulation
-            from music21 import converter
-            score = converter.parse(original_filepath)
+            # Create improved version using mido directly for better compatibility
+            improved_midi = self._create_improved_midi(original_midi, analysis, user_preferences)
             
-            # Apply improvements based on user goals and recommendations
-            improved_score = self._apply_improvements(score, analysis, recommendations, user_preferences)
+            if improved_midi:
+                # Convert to bytes
+                import io
+                midi_bytes = io.BytesIO()
+                improved_midi.save(file=midi_bytes)
+                midi_bytes.seek(0)
+                return midi_bytes.read()
             
-            # Export the improved score to MIDI
-            return self._export_to_midi(improved_score)
+            return None
             
         except Exception as e:
             print(f"Error applying suggestions: {e}")
+            import traceback
+            traceback.print_exc()
             return None
+    
+    def _create_improved_midi(self, original_midi, analysis, user_preferences):
+        """Create improved MIDI using mido directly for better compatibility"""
+        try:
+            user_goals = user_preferences.get('goals', [])
+            target_genre = user_preferences.get('target_genre', '')
+            
+            print(f"Applying improvements for goals: {user_goals}")
+            
+            # Create new MIDI file based on original
+            improved_midi = mido.MidiFile(type=original_midi.type, ticks_per_beat=original_midi.ticks_per_beat)
+            
+            # Copy original tracks
+            for track in original_midi.tracks:
+                new_track = mido.MidiTrack()
+                for msg in track:
+                    new_track.append(msg.copy())
+                improved_midi.tracks.append(new_track)
+            
+            # Add improvements based on user goals
+            if 'harmony' in user_goals:
+                self._add_bass_track(improved_midi, analysis, target_genre)
+            
+            if 'rhythm' in user_goals:
+                self._add_drum_track(improved_midi, analysis, target_genre)
+            
+            if 'arrangement' in user_goals:
+                self._add_chord_track(improved_midi, analysis, target_genre)
+            
+            print(f"Successfully created improved MIDI with {len(improved_midi.tracks)} tracks")
+            return improved_midi
+            
+        except Exception as e:
+            print(f"Error creating improved MIDI: {e}")
+            import traceback
+            traceback.print_exc()
+            return None
+    
+    def _add_bass_track(self, midi_file, analysis, target_genre):
+        """Add a simple bass track"""
+        try:
+            bass_track = mido.MidiTrack()
+            bass_track.append(mido.Message('program_change', channel=1, program=32, time=0))  # Bass program
+            
+            # Simple bass pattern - play root notes on beats
+            note = 36  # C2
+            duration = 480  # Quarter note at 480 ticks per beat
+            
+            # Add some bass notes
+            for i in range(8):  # 8 measures
+                bass_track.append(mido.Message('note_on', channel=1, note=note, velocity=80, time=0 if i == 0 else duration * 4))
+                bass_track.append(mido.Message('note_off', channel=1, note=note, velocity=0, time=duration))
+                
+                # Vary the bass note slightly
+                if i % 4 == 3:
+                    note += 5  # Go up a fourth
+                elif i % 2 == 1:
+                    note += 2  # Go up a whole step
+                else:
+                    note = 36  # Back to root
+            
+            midi_file.tracks.append(bass_track)
+            print("Added bass track")
+            
+        except Exception as e:
+            print(f"Error adding bass track: {e}")
+    
+    def _add_drum_track(self, midi_file, analysis, target_genre):
+        """Add a simple drum track"""
+        try:
+            drum_track = mido.MidiTrack()
+            
+            # Create basic drum pattern
+            kick = 36
+            snare = 38
+            hihat = 42
+            
+            # Simple 4/4 pattern
+            pattern = [
+                (kick, 0, 120),      # Kick on beat 1
+                (hihat, 240, 80),    # Hi-hat on off-beat
+                (snare, 240, 100),   # Snare on beat 2
+                (hihat, 240, 80),    # Hi-hat
+                (kick, 240, 120),    # Kick on beat 3
+                (hihat, 240, 80),    # Hi-hat
+                (snare, 240, 100),   # Snare on beat 4
+                (hihat, 240, 80),    # Hi-hat
+            ]
+            
+            # Repeat pattern for several measures
+            for measure in range(4):
+                for drum_note, time_offset, velocity in pattern:
+                    drum_track.append(mido.Message('note_on', channel=9, note=drum_note, velocity=velocity, time=time_offset))
+                    drum_track.append(mido.Message('note_off', channel=9, note=drum_note, velocity=0, time=120))
+            
+            midi_file.tracks.append(drum_track)
+            print("Added drum track")
+            
+        except Exception as e:
+            print(f"Error adding drum track: {e}")
+    
+    def _add_chord_track(self, midi_file, analysis, target_genre):
+        """Add a simple chord accompaniment track"""
+        try:
+            chord_track = mido.MidiTrack()
+            chord_track.append(mido.Message('program_change', channel=2, program=0, time=0))  # Piano
+            
+            # Simple chord progression
+            chords = [
+                [60, 64, 67],  # C major
+                [65, 69, 72],  # F major  
+                [67, 71, 74],  # G major
+                [60, 64, 67],  # C major
+            ]
+            
+            for i, chord in enumerate(chords):
+                time_offset = 0 if i == 0 else 1920  # Whole note duration
+                
+                # Play chord
+                for j, note in enumerate(chord):
+                    chord_track.append(mido.Message('note_on', channel=2, note=note, velocity=60, time=time_offset if j == 0 else 0))
+                
+                # Release chord after whole note
+                for note in chord:
+                    chord_track.append(mido.Message('note_off', channel=2, note=note, velocity=0, time=1920 if note == chord[0] else 0))
+            
+            midi_file.tracks.append(chord_track)
+            print("Added chord track")
+            
+        except Exception as e:
+            print(f"Error adding chord track: {e}")
     
     def _apply_improvements(self, score, analysis, recommendations, user_preferences):
         """Apply specific improvements based on analysis and recommendations"""
         user_goals = user_preferences.get('goals', [])
         target_genre = user_preferences.get('target_genre', '')
         
-        improved_score = score.copy()
+        # Create a copy of the score for modifications
+        improved_score = stream.Score()
+        
+        # Handle both scores with parts and flat streams
+        if hasattr(score, 'parts') and score.parts:
+            for part in score.parts:
+                improved_score.append(part)
+        else:
+            # If it's a flat stream, convert it to a part
+            part = stream.Part()
+            for element in score.flatten():
+                part.append(element)
+            improved_score.append(part)
         
         # Apply harmony improvements
         if 'harmony' in user_goals:
@@ -103,10 +253,14 @@ class MIDIGenerator:
             
             # Find the main melody part
             melody_part = None
-            for part in score.parts:
-                if len(part.flat.notes) > 0:
-                    melody_part = part
-                    break
+            if hasattr(score, 'parts') and score.parts:
+                for part in score.parts:
+                    if len(part.flatten().notes) > 0:
+                        melody_part = part
+                        break
+            else:
+                # Use the score itself as melody part if no parts
+                melody_part = score
             
             if melody_part:
                 # Add harmonic intervals or countermelody
@@ -115,7 +269,7 @@ class MIDIGenerator:
                 
                 scale_notes = self.music_theory.get_scale_notes(song_key, mode)
                 
-                for n in melody_part.flat.notes:
+                for n in melody_part.flatten().notes:
                     if isinstance(n, note.Note):
                         # Add a harmony note (third or fifth above)
                         melody_pitch_class = n.pitch.pitchClass
