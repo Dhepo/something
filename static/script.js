@@ -60,6 +60,12 @@ function setupEventListeners() {
     if (autoImproveCheckbox) {
         autoImproveCheckbox.addEventListener('change', handleAutoImproveChange);
     }
+    
+    // Duration selection
+    const durationSelect = document.getElementById('improvementDuration');
+    if (durationSelect) {
+        durationSelect.addEventListener('change', handleDurationChange);
+    }
 }
 
 function handleDragOver(e) {
@@ -274,12 +280,31 @@ function handleGenreGoalChange(e) {
 
 function handleAutoImproveChange(e) {
     const analyzeBtnText = document.getElementById('analyzeBtnText');
+    const improvementOptions = document.getElementById('improvementOptions');
+    
     if (analyzeBtnText) {
         if (e.target.checked) {
             analyzeBtnText.textContent = 'Analyze & Generate Improved MIDI';
+            if (improvementOptions) {
+                improvementOptions.style.display = 'block';
+            }
         } else {
             analyzeBtnText.textContent = 'Analyze & Get Recommendations';
+            if (improvementOptions) {
+                improvementOptions.style.display = 'none';
+            }
         }
+    }
+}
+
+function handleDurationChange(e) {
+    const durationSelect = document.getElementById('improvementDuration');
+    const customDurationSection = document.getElementById('customDurationSection');
+    
+    if (durationSelect && durationSelect.value === 'custom') {
+        customDurationSection.style.display = 'block';
+    } else {
+        customDurationSection.style.display = 'none';
     }
 }
 
@@ -315,6 +340,23 @@ function handleFormSubmit(e) {
     const autoImprove = document.getElementById('autoImprove');
     if (autoImprove && autoImprove.checked) {
         formData.append('auto_improve', 'on');
+        
+        // Add improvement options
+        const duration = document.getElementById('improvementDuration');
+        if (duration && duration.value) {
+            formData.append('improvement_duration', duration.value);
+        }
+        
+        const customDuration = document.getElementById('customDuration');
+        if (customDuration && customDuration.value) {
+            formData.append('custom_duration', customDuration.value);
+        }
+        
+        // Add selected instruments
+        const instrumentCheckboxes = document.querySelectorAll('input[name="instruments"]:checked');
+        instrumentCheckboxes.forEach(checkbox => {
+            formData.append('instruments', checkbox.value);
+        });
     }
     
     // Show loading state

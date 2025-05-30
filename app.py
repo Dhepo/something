@@ -51,7 +51,10 @@ def upload_file():
                 'goals': user_goals,
                 'target_genre': target_genre,
                 'additional_notes': additional_notes,
-                'auto_improve': auto_improve
+                'auto_improve': auto_improve,
+                'improvement_duration': request.form.get('improvement_duration', 'extend_2x'),
+                'custom_duration': request.form.get('custom_duration', '60'),
+                'instruments': request.form.getlist('instruments')
             }
             
             # Analyze the MIDI file

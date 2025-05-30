@@ -41,28 +41,50 @@ class MIDIGenerator:
         try:
             user_goals = user_preferences.get('goals', [])
             target_genre = user_preferences.get('target_genre', '')
+            selected_instruments = user_preferences.get('instruments', [])
+            duration_option = user_preferences.get('improvement_duration', 'extend_2x')
             
             print(f"Applying improvements for goals: {user_goals}")
+            print(f"Selected instruments: {selected_instruments}")
+            print(f"Duration option: {duration_option}")
             
             # Create new MIDI file - use type 1 to support multiple tracks
             improved_midi = mido.MidiFile(type=1, ticks_per_beat=original_midi.ticks_per_beat)
             
-            # Copy original tracks
+            # Copy original tracks and extend duration if needed
+            duration_multiplier = self._get_duration_multiplier(duration_option, user_preferences)
+            
             for track in original_midi.tracks:
                 new_track = mido.MidiTrack()
+                
+                # Copy original track
                 for msg in track:
                     new_track.append(msg.copy())
+                
+                # Extend track if needed
+                if duration_multiplier > 1:
+                    self._extend_track(new_track, original_midi, duration_multiplier)
+                
                 improved_midi.tracks.append(new_track)
             
-            # Add improvements based on user goals
-            if 'harmony' in user_goals:
+            # Add improvements based on selected instruments
+            if 'bass' in selected_instruments and ('harmony' in user_goals or 'arrangement' in user_goals):
                 self._add_bass_track(improved_midi, analysis, target_genre)
             
-            if 'rhythm' in user_goals:
+            if 'drums' in selected_instruments and 'rhythm' in user_goals:
                 self._add_drum_track(improved_midi, analysis, target_genre)
             
-            if 'arrangement' in user_goals:
+            if 'chords' in selected_instruments and ('harmony' in user_goals or 'arrangement' in user_goals):
                 self._add_chord_track(improved_midi, analysis, target_genre)
+                
+            if 'strings' in selected_instruments:
+                self._add_strings_track(improved_midi, analysis, target_genre)
+                
+            if 'lead' in selected_instruments and 'melody' in user_goals:
+                self._add_lead_track(improved_midi, analysis, target_genre)
+                
+            if 'pad' in selected_instruments and 'arrangement' in user_goals:
+                self._add_pad_track(improved_midi, analysis, target_genre)
             
             print(f"Successfully created improved MIDI with {len(improved_midi.tracks)} tracks")
             return improved_midi

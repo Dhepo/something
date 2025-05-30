@@ -164,12 +164,99 @@
                                         <p class="card-text small">
                                             Let the AI automatically apply improvements to your MIDI file and generate an enhanced version for download.
                                         </p>
-                                        <div class="form-check">
+                                        <div class="form-check mb-3">
                                             <input class="form-check-input" type="checkbox" value="" id="autoImprove" name="auto_improve">
                                             <label class="form-check-label" for="autoImprove">
                                                 <strong>Generate improved MIDI file</strong>
                                                 <small class="d-block text-muted">Apply selected improvements automatically and download the enhanced version</small>
                                             </label>
+                                        </div>
+                                        
+                                        <!-- Improvement Options -->
+                                        <div id="improvementOptions" style="display: none;">
+                                            <hr class="my-3">
+                                            <h6 class="text-success mb-3">
+                                                <i class="fas fa-cog me-2"></i>
+                                                Customization Options
+                                            </h6>
+                                            
+                                            <!-- Duration Selection -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="improvementDuration" class="form-label">
+                                                        <i class="fas fa-clock me-2"></i>
+                                                        Enhanced version length
+                                                    </label>
+                                                    <select class="form-select" id="improvementDuration" name="improvement_duration">
+                                                        <option value="original">Keep original length</option>
+                                                        <option value="extend_2x" selected>Extend to 2x length</option>
+                                                        <option value="extend_4x">Extend to 4x length</option>
+                                                        <option value="custom">Custom duration</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6" id="customDurationSection" style="display: none;">
+                                                    <label for="customDuration" class="form-label">Custom duration (seconds)</label>
+                                                    <input type="number" class="form-control" id="customDuration" name="custom_duration" min="10" max="300" value="60">
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Instrument Selection -->
+                                            <div class="mb-3">
+                                                <label class="form-label">
+                                                    <i class="fas fa-music me-2"></i>
+                                                    Select instruments to add
+                                                </label>
+                                                <div class="row">
+                                                    <div class="col-md-4 mb-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="bass" id="instBass" name="instruments" checked>
+                                                            <label class="form-check-label" for="instBass">
+                                                                <i class="fas fa-guitar me-1"></i> Bass
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="drums" id="instDrums" name="instruments" checked>
+                                                            <label class="form-check-label" for="instDrums">
+                                                                <i class="fas fa-drum me-1"></i> Drums
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="chords" id="instChords" name="instruments" checked>
+                                                            <label class="form-check-label" for="instChords">
+                                                                <i class="fas fa-piano-keyboard me-1"></i> Chords
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="strings" id="instStrings" name="instruments">
+                                                            <label class="form-check-label" for="instStrings">
+                                                                <i class="fas fa-violin me-1"></i> Strings
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="lead" id="instLead" name="instruments">
+                                                            <label class="form-check-label" for="instLead">
+                                                                <i class="fas fa-microphone me-1"></i> Lead
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="pad" id="instPad" name="instruments">
+                                                            <label class="form-check-label" for="instPad">
+                                                                <i class="fas fa-wave-square me-1"></i> Pad
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
