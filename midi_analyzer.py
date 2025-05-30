@@ -140,7 +140,7 @@ class MIDIAnalyzer:
     def _analyze_notes(self, score):
         """Analyze note patterns and characteristics"""
         try:
-            notes = score.flat.notes
+            notes = score.flatten().notes
             pitches = []
             velocities = []
             
@@ -180,7 +180,7 @@ class MIDIAnalyzer:
             chords_found = []
             
             # Extract chords from the score
-            for element in score.flat:
+            for element in score.flatten():
                 if isinstance(element, chord.Chord):
                     chord_symbol = element.commonName or element.pitchedCommonName
                     chords_found.append(chord_symbol)
@@ -189,7 +189,7 @@ class MIDIAnalyzer:
             if not chords_found:
                 # Group notes by time to find potential chords
                 notes_by_time = defaultdict(list)
-                for n in score.flat.notes:
+                for n in score.flatten().notes:
                     if isinstance(n, note.Note):
                         notes_by_time[float(n.offset)].append(n)
                 
@@ -242,7 +242,7 @@ class MIDIAnalyzer:
             
             # Analyze note durations for rhythmic complexity
             durations = []
-            for n in score.flat.notes:
+            for n in score.flatten().notes:
                 durations.append(float(n.duration.quarterLength))
             
             if durations:
@@ -302,7 +302,7 @@ class MIDIAnalyzer:
             melody_notes = []
             
             # Extract melody (highest notes or first track)
-            for n in score.flat.notes:
+            for n in score.flatten().notes:
                 if isinstance(n, note.Note):
                     melody_notes.append(n.pitch.midi)
                 elif isinstance(n, chord.Chord):

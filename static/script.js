@@ -296,6 +296,27 @@ function handleFormSubmit(e) {
     
     formData.append('file', file);
     
+    // Add user preferences to form data
+    const goalCheckboxes = document.querySelectorAll('input[name="goals"]:checked');
+    goalCheckboxes.forEach(checkbox => {
+        formData.append('goals', checkbox.value);
+    });
+    
+    const targetGenre = document.getElementById('targetGenre');
+    if (targetGenre && targetGenre.value) {
+        formData.append('target_genre', targetGenre.value);
+    }
+    
+    const additionalNotes = document.getElementById('additionalNotes');
+    if (additionalNotes && additionalNotes.value) {
+        formData.append('additional_notes', additionalNotes.value);
+    }
+    
+    const autoImprove = document.getElementById('autoImprove');
+    if (autoImprove && autoImprove.checked) {
+        formData.append('auto_improve', 'on');
+    }
+    
     // Show loading state
     showLoading();
     hideError();
@@ -317,7 +338,9 @@ function handleFormSubmit(e) {
             sessionStorage.setItem('analysisResults', JSON.stringify({
                 analysis: currentAnalysis,
                 recommendations: currentRecommendations,
-                filename: data.filename
+                filename: data.filename,
+                user_preferences: data.user_preferences,
+                improved_midi: data.improved_midi
             }));
             
             // Redirect to results page
