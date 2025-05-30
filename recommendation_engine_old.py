@@ -50,7 +50,7 @@ class RecommendationEngine:
                 'category': 'Chord Progression',
                 'title': 'Extend your chord progression',
                 'description': 'Your piece has a short chord progression. Consider adding more chords for harmonic interest.',
-                'specific_advice': f'Try adding chords from the {key} {mode} scale'
+                'specific_advice': self._suggest_chord_extensions(key, mode, chord_info.get('chords', []))
             })
         
         # Secondary dominants
@@ -58,7 +58,7 @@ class RecommendationEngine:
             'category': 'Advanced Harmony',
             'title': 'Add secondary dominants',
             'description': 'Secondary dominants can add sophisticated harmonic color.',
-            'specific_advice': 'Try secondary dominants like V/V or V/vi for added harmonic color'
+            'specific_advice': self._suggest_secondary_dominants(key, mode)
         })
         
         # Modal interchange
@@ -67,7 +67,7 @@ class RecommendationEngine:
                 'category': 'Modal Color',
                 'title': 'Try modal interchange',
                 'description': 'Borrow chords from the parallel minor key for emotional depth.',
-                'specific_advice': f'Borrow chords from {key} minor for emotional depth - try bVI, bVII, or iv chords'
+                'specific_advice': self._suggest_modal_interchange(key)
             })
         
         # Voice leading improvements
@@ -133,6 +133,16 @@ class RecommendationEngine:
                 'specific_advice': 'Build energy with ascending sequences and phrases.'
             })
         
+        # Scale-based suggestions
+        melody_suggestions = self.music_theory.get_melody_suggestions(key, mode)
+        for suggestion in melody_suggestions[:2]:  # Limit to 2 suggestions
+            suggestions.append({
+                'category': 'Melodic Ideas',
+                'title': suggestion['type'],
+                'description': suggestion['description'],
+                'specific_advice': f'This works well in {key} {mode} and can add melodic interest.'
+            })
+        
         return suggestions
     
     def _get_rhythmic_suggestions(self, analysis, target_genre=''):
@@ -177,6 +187,14 @@ class RecommendationEngine:
                 'specific_advice': 'Use a half-time feel in verses or add a slower bridge section.'
             })
         
+        # Groove suggestions
+        suggestions.append({
+            'category': 'Groove Development',
+            'title': 'Develop rhythmic motifs',
+            'description': 'Create rhythmic patterns that repeat and develop throughout the song.',
+            'specific_advice': 'Establish a core rhythmic motif and vary it in different sections.'
+        })
+        
         return suggestions
     
     def _get_structural_suggestions(self, analysis, target_genre=''):
@@ -203,6 +221,31 @@ class RecommendationEngine:
                 'specific_advice': 'Edit for the strongest musical ideas or create an extended/short version.'
             })
         
+        # Section variety
+        if len(sections) < 3:
+            suggestions.append({
+                'category': 'Section Variety',
+                'title': 'Add contrasting sections',
+                'description': 'Consider adding more contrasting sections for musical interest.',
+                'specific_advice': 'Try adding a bridge with different harmony, melody, or rhythm.'
+            })
+        
+        # Common song forms
+        suggestions.append({
+            'category': 'Song Form',
+            'title': 'Consider classic song forms',
+            'description': 'Traditional song forms can provide effective structure.',
+            'specific_advice': 'Try AABA, ABABCB (verse-chorus-bridge), or theme and variations.'
+        })
+        
+        # Dynamic development
+        suggestions.append({
+            'category': 'Dynamic Arc',
+            'title': 'Plan dynamic development',
+            'description': 'Create an emotional journey through dynamic changes.',
+            'specific_advice': 'Build intensity toward a climax, then provide resolution.'
+        })
+        
         return suggestions
     
     def _get_arrangement_ideas(self, analysis, target_genre=''):
@@ -228,6 +271,30 @@ class RecommendationEngine:
                 'specific_advice': 'Consider which instruments play in which sections for clarity and impact.'
             })
         
+        # Texture suggestions
+        suggestions.append({
+            'category': 'Texture Variety',
+            'title': 'Vary musical texture',
+            'description': 'Different sections can use different textural approaches.',
+            'specific_advice': 'Try solo melody, harmony, counterpoint, or unison sections for contrast.'
+        })
+        
+        # Production ideas
+        suggestions.append({
+            'category': 'Production Ideas',
+            'title': 'Consider production elements',
+            'description': 'Modern production can enhance your musical ideas.',
+            'specific_advice': 'Add reverb for space, compression for punch, or effects for character.'
+        })
+        
+        # Genre-specific suggestions
+        suggestions.append({
+            'category': 'Genre Elements',
+            'title': 'Explore genre characteristics',
+            'description': 'Different genres have characteristic arrangement elements.',
+            'specific_advice': 'Research arrangement techniques from genres that inspire you.'
+        })
+        
         return suggestions
     
     def _get_development_strategies(self, analysis, target_genre=''):
@@ -242,7 +309,68 @@ class RecommendationEngine:
             'specific_advice': 'Use techniques like sequence, inversion, augmentation, or fragmentation.'
         })
         
+        # Harmonic rhythm
+        strategies.append({
+            'category': 'Harmonic Development',
+            'title': 'Vary harmonic rhythm',
+            'description': 'Change how often chords change in different sections.',
+            'specific_advice': 'Slow harmonic rhythm for verses, faster for choruses, or vice versa.'
+        })
+        
+        # Call and response
+        strategies.append({
+            'category': 'Interactive Elements',
+            'title': 'Use call and response',
+            'description': 'Create dialogue between different instruments or sections.',
+            'specific_advice': 'Have melody answered by harmony, or different instruments trading phrases.'
+        })
+        
+        # Layering
+        strategies.append({
+            'category': 'Textural Building',
+            'title': 'Build through layering',
+            'description': 'Add instruments progressively to build energy and complexity.',
+            'specific_advice': 'Start simple and add elements each section or phrase.'
+        })
+        
+        # Contrast
+        strategies.append({
+            'category': 'Musical Contrast',
+            'title': 'Use contrast effectively',
+            'description': 'Contrast in dynamics, rhythm, harmony, or texture creates interest.',
+            'specific_advice': 'Follow loud with soft, complex with simple, high with low.'
+        })
+        
         return strategies
+    
+    def _suggest_chord_extensions(self, key, mode, existing_chords):
+        """Suggest specific chord extensions"""
+        scale_notes = self.music_theory.get_scale_notes(key, mode)
+        
+        suggestions = []
+        if scale_notes:
+            # Suggest diatonic chords not yet used
+            for i, note in enumerate(scale_notes):
+                chord_type = self.music_theory.major_chords[i] if mode == 'major' else self.music_theory.minor_chords[i]
+                suggested_chord = f"{note} {chord_type}"
+                
+                if not any(note in existing for existing in existing_chords):
+                    suggestions.append(suggested_chord)
+        
+        return f"Try adding: {', '.join(suggestions[:3])}" if suggestions else "Explore diatonic chords in your key."
+    
+    def _suggest_secondary_dominants(self, key, mode):
+        """Suggest secondary dominant chords"""
+        scale_notes = self.music_theory.get_scale_notes(key, mode)
+        
+        if not scale_notes:
+            return "Explore dominant chords that resolve to scale degrees."
+        
+        return "Try secondary dominants like V/V (dominant of dominant) or V/vi for added harmonic color."
+    
+    def _suggest_modal_interchange(self, key):
+        """Suggest modal interchange chords"""
+        return f"Borrow chords from {key} minor for emotional depth - try bVI, bVII, or iv chords."
     
     def _get_genre_specific_suggestions(self, analysis, target_genre):
         """Generate genre-specific suggestions"""
