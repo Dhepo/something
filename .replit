@@ -1,0 +1,33 @@
+modules = ["python-3.11"]
+
+[nix]
+channel = "stable-24_05"
+packages = ["portmidi"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "MIDI Analyzer Server"
+
+[[workflows.workflow]]
+name = "MIDI Analyzer Server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pip install flask mido music21 numpy werkzeug && python app.py"
+waitForPort = 5000
+
+[deployment]
+run = ["sh", "-c", "pip install flask mido music21 numpy werkzeug && python app.py"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80

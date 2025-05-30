@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDI Song Development Analyzer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="text-center my-5">
+            <h1 class="display-4 text-primary">
+                <i class="fas fa-music me-3"></i>
+                MIDI Song Development Analyzer
+            </h1>
+            <p class="lead">Upload your MIDI file and get intelligent recommendations for song development</p>
+        </header>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg">
+                    <div class="card-body p-5">
+                        <h3 class="card-title text-center mb-4">
+                            <i class="fas fa-upload me-2"></i>
+                            Upload Your MIDI File
+                        </h3>
+                        
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <div class="upload-area" id="uploadArea">
+                                    <div class="upload-content text-center">
+                                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                        <h4>Drag & Drop your MIDI file here</h4>
+                                        <p class="text-muted">or click to browse</p>
+                                        <small class="text-muted">Supported formats: .mid, .midi (max 16MB)</small>
+                                    </div>
+                                    <input type="file" id="fileInput" name="file" accept=".mid,.midi" style="display: none;">
+                                </div>
+                            </div>
+                            
+                            <div id="fileInfo" class="mb-3" style="display: none;">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-file-audio me-2"></i>
+                                    <span id="fileName"></span>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary ms-2" id="removeFile">
+                                        <i class="fas fa-times"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg" id="analyzeBtn" disabled>
+                                    <i class="fas fa-cog me-2"></i>
+                                    Analyze & Get Recommendations
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div id="loadingSection" class="text-center mt-4" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Analyzing your MIDI file...</p>
+                        </div>
+                        
+                        <div id="errorSection" class="alert alert-danger mt-4" style="display: none;">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span id="errorMessage"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Features Section -->
+                <div class="row mt-5">
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card text-center">
+                            <i class="fas fa-chart-line feature-icon"></i>
+                            <h5>Musical Analysis</h5>
+                            <p>Analyze key signatures, chord progressions, tempo, and melodic patterns</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card text-center">
+                            <i class="fas fa-lightbulb feature-icon"></i>
+                            <h5>Smart Recommendations</h5>
+                            <p>Get AI-powered suggestions for harmony, melody, rhythm, and structure</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card text-center">
+                            <i class="fas fa-magic feature-icon"></i>
+                            <h5>Development Ideas</h5>
+                            <p>Receive creative ideas for arrangement, instrumentation, and song development</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
