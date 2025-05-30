@@ -44,8 +44,8 @@ class MIDIGenerator:
             
             print(f"Applying improvements for goals: {user_goals}")
             
-            # Create new MIDI file based on original
-            improved_midi = mido.MidiFile(type=original_midi.type, ticks_per_beat=original_midi.ticks_per_beat)
+            # Create new MIDI file - use type 1 to support multiple tracks
+            improved_midi = mido.MidiFile(type=1, ticks_per_beat=original_midi.ticks_per_beat)
             
             # Copy original tracks
             for track in original_midi.tracks:
