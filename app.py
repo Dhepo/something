@@ -1,10 +1,13 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, send_file
 import os
 import json
 from werkzeug.utils import secure_filename
 from midi_analyzer import MIDIAnalyzer
 from recommendation_engine import RecommendationEngine
+from midi_generator import MIDIGenerator
 import traceback
+import tempfile
+from io import BytesIO
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -42,11 +45,13 @@ def upload_file():
             user_goals = request.form.getlist('goals')
             target_genre = request.form.get('target_genre', '')
             additional_notes = request.form.get('additional_notes', '')
+            auto_improve = request.form.get('auto_improve') == 'on'
             
             user_preferences = {
                 'goals': user_goals,
                 'target_genre': target_genre,
-                'additional_notes': additional_notes
+                'additional_notes': additional_notes,
+                'auto_improve': auto_improve
             }
             
             # Analyze the MIDI file
@@ -69,7 +74,44 @@ def upload_file():
                     'user_preferences': user_preferences
                 }
                 
-                # Clean up uploaded file
+                # Generate improved MIDI if requested
+                if auto_improve and user_goals:
+                    try:
+                        generator = MIDIGenerator()
+                        improved_midi_data = generator.apply_suggestions(
+                            filepath, 
+                            analysis_result['analysis'], 
+                            recommendations, 
+                            user_preferences
+                        )
+                        
+                        if improved_midi_data:
+                            # Save improved MIDI to session or temporary storage
+                            import uuid
+                            session_id = str(uuid.uuid4())
+                            temp_improved_path = os.path.join(app.config['UPLOAD_FOLDER'], f'improved_{session_id}.mid')
+                            
+                            with open(temp_improved_path, 'wb') as f:
+                                f.write(improved_midi_data)
+                            
+                            result['improved_midi'] = {
+                                'available': True,
+                                'download_id': session_id,
+                                'filename': f'improved_{filename}'
+                            }
+                        else:
+                            result['improved_midi'] = {
+                                'available': False,
+                                'error': 'Failed to generate improved MIDI'
+                            }
+                    except Exception as e:
+                        print(f"Error generating improved MIDI: {e}")
+                        result['improved_midi'] = {
+                            'available': False,
+                            'error': str(e)
+                        }
+                
+                # Clean up original uploaded file
                 os.remove(filepath)
                 
                 return jsonify(result)
@@ -89,6 +131,44 @@ def upload_file():
 @app.route('/results')
 def results():
     return render_template('results.html')
+
+@app.route('/download/<download_id>')
+def download_improved_midi(download_id):
+    try:
+        # Construct the improved MIDI file path
+        improved_file_path = os.path.join(app.config['UPLOAD_FOLDER'], f'improved_{download_id}.mid')
+        
+        # Check if file exists
+        if not os.path.exists(improved_file_path):
+            return jsonify({'error': 'Improved MIDI file not found'}), 404
+        
+        # Send file for download
+        return send_file(
+            improved_file_path,
+            as_attachment=True,
+            download_name=f'improved_music_{download_id}.mid',
+            mimetype='audio/midi'
+        )
+        
+    except Exception as e:
+        print(f"Error downloading improved MIDI: {e}")
+        return jsonify({'error': 'Failed to download file'}), 500
+
+@app.route('/cleanup/<download_id>', methods=['POST'])
+def cleanup_improved_midi(download_id):
+    try:
+        # Clean up the temporary improved MIDI file
+        improved_file_path = os.path.join(app.config['UPLOAD_FOLDER'], f'improved_{download_id}.mid')
+        
+        if os.path.exists(improved_file_path):
+            os.remove(improved_file_path)
+            return jsonify({'success': True})
+        else:
+            return jsonify({'error': 'File not found'}), 404
+            
+    except Exception as e:
+        print(f"Error cleaning up file: {e}")
+        return jsonify({'error': 'Failed to cleanup file'}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

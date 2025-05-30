@@ -153,10 +153,32 @@
                                 </div>
                             </div>
                             
+                            <!-- Auto-Improvement Option -->
+                            <div class="mb-4" id="autoImproveSection" style="display: none;">
+                                <div class="card border-success">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-success">
+                                            <i class="fas fa-magic me-2"></i>
+                                            Auto-Improvement Feature
+                                        </h6>
+                                        <p class="card-text small">
+                                            Let the AI automatically apply improvements to your MIDI file and generate an enhanced version for download.
+                                        </p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="autoImprove" name="auto_improve">
+                                            <label class="form-check-label" for="autoImprove">
+                                                <strong>Generate improved MIDI file</strong>
+                                                <small class="d-block text-muted">Apply selected improvements automatically and download the enhanced version</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary btn-lg" id="analyzeBtn" disabled>
                                     <i class="fas fa-cog me-2"></i>
-                                    Analyze & Get Recommendations
+                                    <span id="analyzeBtnText">Analyze & Get Recommendations</span>
                                 </button>
                             </div>
                         </form>

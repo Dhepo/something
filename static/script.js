@@ -54,6 +54,12 @@ function setupEventListeners() {
     if (genreGoal) {
         genreGoal.addEventListener('change', handleGenreGoalChange);
     }
+
+    // Auto-improve checkbox
+    const autoImproveCheckbox = document.getElementById('autoImprove');
+    if (autoImproveCheckbox) {
+        autoImproveCheckbox.addEventListener('change', handleAutoImproveChange);
+    }
 }
 
 function handleDragOver(e) {
@@ -116,6 +122,13 @@ function displayFileInfo(file) {
         analysisGoals.classList.add('fade-in');
     }
     
+    // Show auto-improve section
+    const autoImproveSection = document.getElementById('autoImproveSection');
+    if (autoImproveSection) {
+        autoImproveSection.style.display = 'block';
+        autoImproveSection.classList.add('fade-in');
+    }
+    
     if (analyzeBtn) {
         analyzeBtn.disabled = false;
     }
@@ -133,6 +146,12 @@ function clearFile() {
     const analysisGoals = document.getElementById('analysisGoals');
     if (analysisGoals) {
         analysisGoals.style.display = 'none';
+    }
+    
+    // Hide auto-improve section
+    const autoImproveSection = document.getElementById('autoImproveSection');
+    if (autoImproveSection) {
+        autoImproveSection.style.display = 'none';
     }
     
     if (analyzeBtn) {
@@ -167,6 +186,17 @@ function handleGenreGoalChange(e) {
             genreSelection.style.display = 'block';
         } else {
             genreSelection.style.display = 'none';
+        }
+    }
+}
+
+function handleAutoImproveChange(e) {
+    const analyzeBtnText = document.getElementById('analyzeBtnText');
+    if (analyzeBtnText) {
+        if (e.target.checked) {
+            analyzeBtnText.textContent = 'Analyze & Generate Improved MIDI';
+        } else {
+            analyzeBtnText.textContent = 'Analyze & Get Recommendations';
         }
     }
 }
